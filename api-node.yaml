@@ -1,0 +1,216 @@
+openapi: 3.0.0
+info:
+  title: API de Reservas y Espacios
+  description: API para gestionar reservas y espacios, con verificación de cursos a través de un microservicio Python.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8911
+    description: Servidor de desarrollo
+
+paths:
+  /:
+    get:
+      summary: Verificar si el servidor está activo
+      responses:
+        '200':
+          description: Servidor activo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Status:
+                    type: string
+                    example: 'UP'
+
+  /reservas:
+    get:
+      summary: Obtener todas las reservas
+      responses:
+        '200':
+          description: Un arreglo JSON de reservas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    idCurso:
+                      type: integer
+                    nombreCliente:
+                      type: string
+                    fechaReserva:
+                      type: string
+                      format: date-time
+                    espacioReservado:
+                      type: string
+    post:
+      summary: Crear una nueva reserva
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Document:
+                  type: object
+                  properties:
+                    idCurso:
+                      type: integer
+                      example: 101
+                    nombreCliente:
+                      type: string
+                      example: 'Juan Perez'
+                    fechaReserva:
+                      type: string
+                      format: date-time
+                      example: '2024-10-10T10:00:00Z'
+                    espacioReservado:
+                      type: string
+                      example: 'Aula 101'
+      responses:
+        '200':
+          description: Reserva creada exitosamente
+        '400':
+          description: Error en los datos proporcionados
+        '404':
+          description: El curso no existe en la API de Python
+
+    put:
+      summary: Actualizar una reserva existente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Filter:
+                  type: object
+                  description: Filtros para encontrar el documento a actualizar
+                DataToBeUpdated:
+                  type: object
+                  description: Datos que deben actualizarse
+      responses:
+        '200':
+          description: Reserva actualizada exitosamente
+        '400':
+          description: Error en los datos proporcionados
+
+    delete:
+      summary: Eliminar una reserva existente
+      parameters:
+        - in: query
+          name: idCurso
+          required: true
+          schema:
+            type: integer
+            example: 101
+      responses:
+        '200':
+          description: Reserva eliminada exitosamente
+        '400':
+          description: Error en los datos proporcionados
+
+  /espacios:
+    get:
+      summary: Obtener todos los espacios
+      responses:
+        '200':
+          description: Un arreglo JSON de espacios
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    nombreEspacio:
+                      type: string
+                    ubicacion:
+                      type: string
+
+    post:
+      summary: Crear un nuevo espacio
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Document:
+                  type: object
+                  properties:
+                    nombreEspacio:
+                      type: string
+                      example: 'Aula 101'
+                    ubicacion:
+                      type: string
+                      example: 'Edificio A'
+      responses:
+        '200':
+          description: Espacio creado exitosamente
+        '400':
+          description: Error en los datos proporcionados
+
+    put:
+      summary: Actualizar un espacio existente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Filter:
+                  type: object
+                  description: Filtros para encontrar el espacio a actualizar
+                DataToBeUpdated:
+                  type: object
+                  description: Datos que deben actualizarse
+      responses:
+        '200':
+          description: Espacio actualizado exitosamente
+        '400':
+          description: Error en los datos proporcionados
+
+    delete:
+      summary: Eliminar un espacio existente
+      parameters:
+        - in: query
+          name: nombreEspacio
+          required: true
+          schema:
+            type: string
+            example: 'Aula 101'
+      responses:
+        '200':
+          description: Espacio eliminado exitosamente
+        '400':
+          description: Error en los datos proporcionados
+
+components:
+  schemas:
+    Reserva:
+      type: object
+      properties:
+        idCurso:
+          type: integer
+        nombreCliente:
+          type: string
+        fechaReserva:
+          type: string
+          format: date-time
+        espacioReservado:
+          type: string
+    Espacio:
+      type: object
+      properties:
+        nombreEspacio:
+          type: string
+        ubicacion:
+          type: string
