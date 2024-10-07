@@ -1,0 +1,126 @@
+openapi: 3.0.0
+info:
+  title: API de Orquestador
+  description: API para orquestar microservicios que gestionan estudiantes, cursos, inscripciones y espacios.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Servidor local de desarrollo
+
+paths:
+  /orquestador/inscripciones:
+    get:
+      summary: Obtener inscripciones
+      description: Obtiene la lista de inscripciones desde el microservicio de inscripciones.
+      responses:
+        '200':
+          description: Lista de inscripciones obtenida exitosamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '500':
+          description: Error al obtener las inscripciones.
+
+  /orquestador/estudiantes:
+    get:
+      summary: Obtener estudiantes
+      description: Obtiene la lista de estudiantes desde el microservicio Java.
+      responses:
+        '200':
+          description: Lista de estudiantes obtenida exitosamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '500':
+          description: Error al obtener los estudiantes.
+
+  /orquestador/cursos:
+    get:
+      summary: Obtener cursos
+      description: Obtiene la lista de cursos desde el microservicio Python.
+      responses:
+        '200':
+          description: Lista de cursos obtenida exitosamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '500':
+          description: Error al obtener los cursos.
+
+  /orquestador/espacios:
+    get:
+      summary: Obtener espacios
+      description: Obtiene la lista de espacios desde el microservicio Node.js.
+      responses:
+        '200':
+          description: Lista de espacios obtenida exitosamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '500':
+          description: Error al obtener los espacios.
+
+  /estudiante/{codigo}/cursos:
+    get:
+      summary: Obtener cursos de un estudiante
+      description: Obtiene los cursos que lleva un estudiante con detalles de los profesores y nombres de cursos.
+      parameters:
+        - in: path
+          name: codigo
+          required: true
+          schema:
+            type: string
+          description: Código del estudiante.
+      responses:
+        '200':
+          description: Lista de cursos y profesores del estudiante.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  codigoEstudiante:
+                    type: string
+                    description: Código del estudiante.
+                  nombre:
+                    type: string
+                    description: Nombre del estudiante.
+                  apellido:
+                    type: string
+                    description: Apellido del estudiante.
+                  cursos:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        idCurso:
+                          type: string
+                          description: ID del curso.
+                        nombreCurso:
+                          type: string
+                          description: Nombre del curso.
+                        idProfesor:
+                          type: string
+                          description: ID del profesor.
+                        nombreProfesor:
+                          type: string
+                          description: Nombre del profesor.
+                        error:
+                          type: string
+                          description: Mensaje de error si hubo un problema al obtener los detalles.
+        '404':
+          description: Estudiante no encontrado o no se encontraron inscripciones.
+        '500':
+          description: Error interno del servidor.
